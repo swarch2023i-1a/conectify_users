@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Niser01/conectify/tree/main/conectify_users/conectify_users_ms/internal/api/dtos"
 	"github.com/Niser01/conectify/tree/main/conectify_users/conectify_users_ms/internal/views"
@@ -31,13 +32,13 @@ func (a *API) Create_User(c echo.Context) error {
 
 func (a *API) Read_userByid(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Read_userByid{}
-	err := c.Bind(&params)
+	id := c.Param("id")
+	idnum, err := strconv.Atoi(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	user, err := a.view.Read_userByid(ctx, params.Id)
+	user, err := a.view.Read_userByid(ctx, idnum)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -47,13 +48,13 @@ func (a *API) Read_userByid(c echo.Context) error {
 
 func (a *API) Read_userByemail(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Read_userByemail{}
-	err := c.Bind(&params)
+	EMail := c.Param("eMail")
+	err := c.Bind(&EMail)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	user, err := a.view.Read_userByemail(ctx, params.EMail)
+	user, err := a.view.Read_userByemail(ctx, EMail)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -63,13 +64,13 @@ func (a *API) Read_userByemail(c echo.Context) error {
 
 func (a *API) Read_userByname(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Read_userByname{}
-	err := c.Bind(&params)
+	Names := c.Param("names")
+	err := c.Bind(&Names)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	user, err := a.view.Read_userByname(ctx, params.Names)
+	user, err := a.view.Read_userByname(ctx, Names)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -79,13 +80,13 @@ func (a *API) Read_userByname(c echo.Context) error {
 
 func (a *API) Read_userBylastname(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Read_userBylastname{}
-	err := c.Bind(&params)
+	LastNames := c.Param("lastNames")
+	err := c.Bind(&LastNames)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	user, err := a.view.Read_userBylastname(ctx, params.LastNames)
+	user, err := a.view.Read_userBylastname(ctx, LastNames)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -95,13 +96,13 @@ func (a *API) Read_userBylastname(c echo.Context) error {
 
 func (a *API) Read_userBypnumber(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Read_userBypnumber{}
-	err := c.Bind(&params)
+	PhoneNumber := c.Param("phoneNumber")
+	err := c.Bind(&PhoneNumber)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	user, err := a.view.Read_userBypnumber(ctx, params.PhoneNumber)
+	user, err := a.view.Read_userBypnumber(ctx, PhoneNumber)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -127,13 +128,13 @@ func (a *API) Update_userByid(c echo.Context) error {
 
 func (a *API) Delete_userByid(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Delete_userByid{}
-	err := c.Bind(&params)
+	Id := c.Param("id")
+	idnum, err := strconv.Atoi(Id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Delete_userByid(ctx, params.Id)
+	err = a.view.Delete_userByid(ctx, idnum)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -165,7 +166,7 @@ func (a *API) Create_savedElement(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Create_savedElement(ctx, params.IdUser, params.IdElement, params.IdType)
+	err = a.view.Create_savedElement(ctx, params.IdUser, params.IdElement)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -175,13 +176,13 @@ func (a *API) Create_savedElement(c echo.Context) error {
 
 func (a *API) Read_savedElements(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Read_savedElements{}
-	err := c.Bind(&params)
+	idElement := c.Param("idElement")
+	idnum, err := strconv.Atoi(idElement)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	elements, err := a.view.Read_savedElements(ctx, params.IdUser)
+	elements, err := a.view.Read_savedElements(ctx, idnum)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -191,13 +192,13 @@ func (a *API) Read_savedElements(c echo.Context) error {
 
 func (a *API) Delete_savedElement(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Delete_savedElement{}
-	err := c.Bind(&params)
+	idElement := c.Param("idElement")
+	idnum, err := strconv.Atoi(idElement)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Delete_savedElement(ctx, params.IdElement)
+	err = a.view.Delete_savedElement(ctx, idnum)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -207,13 +208,13 @@ func (a *API) Delete_savedElement(c echo.Context) error {
 
 func (a *API) Delete_allsavedElements(c echo.Context) error {
 	ctx := c.Request().Context()
-	params := dtos.Delete_allsavedElements{}
-	err := c.Bind(&params)
+	idUser := c.Param("idUser")
+	idnum, err := strconv.Atoi(idUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Delete_allsavedElements(ctx, params.IdUser)
+	err = a.view.Delete_allsavedElements(ctx, idnum)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

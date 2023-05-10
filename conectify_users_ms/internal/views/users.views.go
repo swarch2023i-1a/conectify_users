@@ -13,23 +13,23 @@ const (
 	insert into USERS_PROFILE (names, lastNames, photoId, eMail, status, phoneNumber) 
 	values (?, ?, ?, ?, ?, ?)`
 	queryread_userByid = `
-	SELECT names, lastNames, photoId, eMail, status, phoneNumber
+	SELECT id, names, lastNames, photoId, eMail, status, phoneNumber
 	FROM USERS_PROFILE 
 	WHERE id = ?`
 	queryread_userByemail = `
-	SELECT names, lastNames, photoId, eMail, status, phoneNumber
+	SELECT id, names, lastNames, photoId, eMail, status, phoneNumber
 	FROM USERS_PROFILE 
 	WHERE eMail = ?`
 	queryread_userByname = `
-	SELECT names, lastNames, photoId, eMail, status, phoneNumber
+	SELECT id, names, lastNames, photoId, eMail, status, phoneNumber
 	FROM USERS_PROFILE 
 	WHERE names = ?`
 	queryread_userBylastname = `
-	SELECT names, lastNames, photoId, eMail, status, phoneNumber
+	SELECT id, names, lastNames, photoId, eMail, status, phoneNumber
 	FROM USERS_PROFILE 
 	WHERE lastNames = ?`
 	queryread_userBypnumber = `
-	SELECT names, lastNames, photoId, eMail, status, phoneNumber
+	SELECT id, names, lastNames, photoId, eMail, status, phoneNumber
 	FROM USERS_PROFILE 
 	WHERE phoneNumber = ?`
 	queryupdate_userByid = `
@@ -45,10 +45,10 @@ const (
 	WHERE id = ?`
 
 	querycreate_savedElement = `
-	INSERT INTO USERS_SAVED_ELEMENTS (idUser, idElement, idType)
-	VALUES (?, ?, ?)`
+	INSERT INTO USERS_SAVED_ELEMENTS (idUser, idElement)
+	VALUES (?, ?)`
 	queryread_savedElements = `
-	SELECT idUser, idElement, idType
+	SELECT idUser, idElement
 	FROM USERS_SAVED_ELEMENTS 
 	WHERE idUser = ?`
 	querydelete_savedElement = `
@@ -148,8 +148,8 @@ func (r *View_struct) Edit_statusByid(ctx context.Context, id int, status int) e
 	return nil
 }
 
-func (r *View_struct) Create_savedElement(ctx context.Context, idUser int, idElement int, idType int) error {
-	_, err := r.db.ExecContext(ctx, querycreate_savedElement, idUser, idElement, idType)
+func (r *View_struct) Create_savedElement(ctx context.Context, idUser int, idElement int) error {
+	_, err := r.db.ExecContext(ctx, querycreate_savedElement, idUser, idElement)
 	if err != nil {
 		return err
 	}
