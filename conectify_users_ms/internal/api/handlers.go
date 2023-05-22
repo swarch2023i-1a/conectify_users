@@ -23,7 +23,7 @@ func (a *API) Create_User(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Create_user(ctx, params.Names, params.LastNames, params.PhotoId, params.EMail, params.Status, params.PhoneNumber)
+	err = a.view.Create_user(ctx, params.Names, params.LastNames, params.PhotoId, params.EMail, params.Status, params.PhoneNumber, params.SSO_UserId)
 	if err != nil {
 		if err == views.ErrUserAlreadyExists {
 			return c.JSON(http.StatusConflict, err)
@@ -66,6 +66,21 @@ func (a *API) Read_userByemail(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+func (a *API) Read_idByemail(c echo.Context) error {
+	EMail := c.Param("eMail")
+	err := c.Bind(&EMail)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	userid, err := a.view.Read_idByemail(EMail)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, userid)
+}
+
 func (a *API) Read_userByname(c echo.Context) error {
 	Names := c.Param("names")
 	err := c.Bind(&Names)
@@ -74,6 +89,7 @@ func (a *API) Read_userByname(c echo.Context) error {
 	}
 
 	user, err := a.view.Read_userByname(Names)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -111,6 +127,36 @@ func (a *API) Read_userBypnumber(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+func (a *API) Read_idBySSOId(c echo.Context) error {
+	SSO_UserId := c.Param("sso_userid")
+	err := c.Bind(&SSO_UserId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	user, err := a.view.Read_idBySSOId(SSO_UserId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, user)
+}
+
+func (a *API) Update_photoId(c echo.Context) error {
+	ctx := c.Request().Context()
+	params := dtos.Update_photoId{}
+	err := c.Bind(&params)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = a.view.Update_photoId(ctx, params.PhotoId, params.Id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, nil)
+}
+
 func (a *API) Update_userByid(c echo.Context) error {
 	ctx := c.Request().Context()
 	params := dtos.Update_userByid{}
@@ -119,7 +165,7 @@ func (a *API) Update_userByid(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Update_userByid(ctx, params.Id, params.Names, params.LastNames, params.PhotoId, params.EMail, params.Status, params.PhoneNumber)
+	err = a.view.Update_userByid(ctx, params.Names, params.LastNames, params.PhotoId, params.EMail, params.Status, params.PhoneNumber, params.SSO_UserId, params.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -129,13 +175,13 @@ func (a *API) Update_userByid(c echo.Context) error {
 
 func (a *API) Delete_userByid(c echo.Context) error {
 	ctx := c.Request().Context()
-	Id := c.Param("id")
-	idnum, err := strconv.Atoi(Id)
+	params := dtos.Delete_userByid{}
+	err := c.Bind(&params)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Delete_userByid(ctx, idnum)
+	err = a.view.Delete_userByid(ctx, params.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -151,7 +197,7 @@ func (a *API) Edit_statusByid(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Edit_statusByid(ctx, params.Id, params.Status)
+	err = a.view.Edit_statusByid(ctx, params.Status, params.Id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -192,13 +238,13 @@ func (a *API) Read_savedElements(c echo.Context) error {
 
 func (a *API) Delete_savedElement(c echo.Context) error {
 	ctx := c.Request().Context()
-	idElement := c.Param("idElement")
-	idnum, err := strconv.Atoi(idElement)
+	params := dtos.Delete_savedElement{}
+	err := c.Bind(&params)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Delete_savedElement(ctx, idnum)
+	err = a.view.Delete_savedElement(ctx, params.IdElement)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -208,13 +254,13 @@ func (a *API) Delete_savedElement(c echo.Context) error {
 
 func (a *API) Delete_allsavedElements(c echo.Context) error {
 	ctx := c.Request().Context()
-	idUser := c.Param("idUser")
-	idnum, err := strconv.Atoi(idUser)
+	params := dtos.Delete_allsavedElements{}
+	err := c.Bind(&params)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = a.view.Delete_allsavedElements(ctx, idnum)
+	err = a.view.Delete_allsavedElements(ctx, params.IdUser)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
